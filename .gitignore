@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Конфигурации и секреты
+.env
+.env.*
+config.ini
+db_config.py
+credentials.json
+
+# Бэкапы
+*.bak
+*.swp
+*.tmp
+# Логи
+*.log
+# Документация
+docs/
+# Сборки и артефакты
+build/
+dist/
+*.egg-info/
+# Тесты
+tests/
