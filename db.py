@@ -25,7 +25,18 @@ def get_employee_id(name):
         print(f"Ошибка базы данных: {err}")
         return None
 
-      
+def add_employee(name, department, role, hire_date):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = """
+        INSERT INTO employees (name, department, role, hire_date)
+        VALUES (%s, %s, %s, %s)
+    """
+    cursor.execute(query, (name, department, role, hire_date))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
 
 def start_work_session(employee_id):
   try:
