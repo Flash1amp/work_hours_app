@@ -14,7 +14,7 @@ style.configure('TButton', font=('Arial', 12))
 style.configure('TLabel', font=('Arial', 14))
 style.configure('TEntry', font=('Arial', 12))
 
-label = ttk.Label(root, text="Добро пожаловать в приложение для учета рабочего времени!")
+label = ttk.Label(root, text="Добро пожаловать в приложение для учета рабочего времени")
 label.pack(pady=(20, 15))
 
 entry = ttk.Entry(root, width=40)
