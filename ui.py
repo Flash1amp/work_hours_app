@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from db import get_employee_id, start_work_session, end_work_session
 from datetime import datetime
+from db import add_employee
 
 root = tk.Tk()
 root.title("Приложение для учета рабочего времени")
@@ -22,6 +23,7 @@ entry.pack(pady=10)
 frame_buttons = ttk.Frame(root)
 frame_buttons.pack(pady=20)
 
+# Старт смены
 def start_shift():
     name = entry.get().strip()
     if not name:
@@ -36,6 +38,7 @@ def start_shift():
         else:
             messagebox.showerror("Ошибка", f"Сотрудник {name} не найден.")
 
+# Конец смены
 def end_shift():
     name = entry.get().strip()
     if not name:
@@ -50,12 +53,12 @@ def end_shift():
         else:
             messagebox.showerror("Ошибка", f"Сотрудник {name} не найден.")
 
+# Добавление нового сотрудника
 def open_add_employee_window():
     add_window = tk.Toplevel(root)
     add_window.title("Добавление нового сотрудника")
     add_window.geometry("400x300")
 
-    # Метки и поля
     tk.Label(add_window, text="Имя:").pack()
     entry_name = tk.Entry(add_window)
     entry_name.pack()
@@ -88,7 +91,6 @@ def open_add_employee_window():
             messagebox.showerror("Ошибка", "Дата должна быть в формате YYYY-MM-DD.")
             return
 
-        from db import add_employee
         try:
             add_employee(name, dept, role, hire_date)
             messagebox.showinfo("Успех", f"Сотрудник {name} добавлен.")
@@ -98,7 +100,7 @@ def open_add_employee_window():
 
     tk.Button(add_window, text="Сохранить", command=submit).pack(pady=10)
 
-
+# Кнопочки
 btn_start = ttk.Button(frame_buttons, text="Начать смену", command=start_shift)
 btn_start.pack(side=tk.LEFT, padx=10)
 
