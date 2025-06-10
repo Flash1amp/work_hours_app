@@ -11,7 +11,6 @@ def open_add_employee_window():
     add_window.title("Добавление нового сотрудника")
     add_window.geometry("400x300")
 
-    # Метки и поля
     tk.Label(add_window, text="Имя:").pack()
     entry_name = tk.Entry(add_window)
     entry_name.pack()
