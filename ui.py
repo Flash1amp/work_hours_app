@@ -9,10 +9,12 @@ root.title("Приложение для учета рабочего времен
 root.geometry("500x300")
 root.resizable(False, False)
 
+
 style = ttk.Style()
 style.configure('TButton', font=('Arial', 12))
 style.configure('TLabel', font=('Arial', 14))
 style.configure('TEntry', font=('Arial', 12))
+
 
 label = ttk.Label(root, text="Добро пожаловать в приложение для учета рабочего времени")
 label.pack(pady=(20, 15))

@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from db import add_employee
 from datetime import datetime
-
+from db import add_employee
 from ui import root
 
 
@@ -43,7 +43,7 @@ def open_add_employee_window():
             messagebox.showerror("Ошибка", "Дата должна быть в формате YYYY-MM-DD.")
             return
 
-        from db import add_employee
+
         try:
             add_employee(name, dept, role, hire_date)
             messagebox.showinfo("Успех", f"Сотрудник {name} добавлен.")
