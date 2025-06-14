@@ -1,8 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from db import get_employee_id, start_work_session, end_work_session
+from db import get_employee_id, start_work_session, end_work_session, add_employee, get_all_employees, get_sessions_by_employee
 from datetime import datetime
-from db import add_employee
 
 root = tk.Tk()
 root.title("Приложение для учета рабочего времени")
@@ -101,6 +100,45 @@ def open_add_employee_window():
             messagebox.showerror("Ошибка", f"Не удалось добавить сотрудника: {e}")
 
     tk.Button(add_window, text="Сохранить", command=submit).pack(pady=10)
+    
+def open_employee_view_window():
+    window = tk.Toplevel()
+    window.title("Список сотрудников и сессий")
+    window.geometry("900x500")
+
+    # Левый Treeview — сотрудники
+    employee_tree = ttk.Treeview(window, columns=("ID", "Name", "Department", "Role", "Hire Date"), show="headings")
+    for col in ("ID", "Name", "Department", "Role", "Hire Date"):
+        employee_tree.heading(col, text=col)
+        employee_tree.column(col, width=100)
+    employee_tree.pack(side="left", fill="both", expand=True)
+
+    for emp in get_all_employees():
+        employee_tree.insert("", "end", values=emp)
+
+    # Правый Treeview — сессии
+    session_tree = ttk.Treeview(window, columns=("Start Time", "End Time"), show="headings")
+    session_tree.heading("Start Time", text="Начало")
+    session_tree.heading("End Time", text="Окончание")
+    session_tree.column("Start Time", width=150)
+    session_tree.column("End Time", width=150)
+    session_tree.pack(side="right", fill="both", expand=True)
+
+    # ⬇ Вставляем внутрь функции
+    def on_employee_select(event):
+        selected = employee_tree.selection()
+        if selected:
+            emp_values = employee_tree.item(selected[0], "values")
+            employee_id = emp_values[0]
+
+            session_tree.delete(*session_tree.get_children())
+
+            sessions = get_sessions_by_employee(employee_id)
+            for session in sessions:
+                session_tree.insert("", "end", values=session)
+
+    employee_tree.bind("<<TreeviewSelect>>", on_employee_select)
+
 
 # Кнопочки
 btn_start = ttk.Button(frame_buttons, text="Начать смену", command=start_shift)
@@ -111,6 +149,9 @@ btn_end.pack(side=tk.LEFT, padx=10)
 
 add_btn = tk.Button(root, text="Добавить сотрудника", command=open_add_employee_window)
 add_btn.pack(pady=10)
+
+btn_view_employees = tk.Button(root, text="Просмотр сотрудников", command=open_employee_view_window)
+btn_view_employees.pack(pady=10)
 
 
 root.mainloop()

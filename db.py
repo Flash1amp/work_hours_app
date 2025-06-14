@@ -1,11 +1,12 @@
 import mysql.connector
 import os
+
 def get_connection():
     return mysql.connector.connect(
-        host=os.getenv("DB_HOST"),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD"),
-        database=os.getenv("DB_NAME")
+        host="127.0.0.1",
+        user="root",
+        password="Agent007th",
+        database="time_tracking"
     )
 
 
@@ -67,3 +68,34 @@ def end_work_session(employee_id):
             cursor.close()
         if conn:
             conn.close()
+
+def get_all_employees():
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        query = "SELECT id, name, department, role, hire_date FROM employees"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return result
+    except mysql.connector.Error as err:
+        print(f"Ошибка базы данных: {err}")
+        return []
+
+def get_sessions_by_employee(employee_id):
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        query = """
+            SELECT start_time, end_time FROM work_sessions
+            WHERE employee_id = %s
+        """
+        cursor.execute(query, (employee_id,))
+        result = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return result
+    except mysql.connector.Error as err:
+        print(f"Ошибка базы данных: {err}")
+        return []
