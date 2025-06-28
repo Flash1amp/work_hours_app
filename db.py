@@ -1,5 +1,9 @@
 import mysql.connector
 import os
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 def get_connection():
     return mysql.connector.connect(
@@ -50,7 +54,7 @@ def start_work_session(employee_id):
     cursor.close()
     conn.close()
   except mysql.connector.Error as err:
-      print(f"Ошибка базы данных: {err}")
+      print(f"Ошибка базы данных: {err}") 
 
 def end_work_session(employee_id):
     conn = None
