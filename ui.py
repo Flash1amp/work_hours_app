@@ -1,4 +1,5 @@
 import tkinter as tk
+import re
 from tkinter import ttk, messagebox
 from db import get_employee_id, start_work_session, end_work_session, add_employee, get_all_employees, get_sessions_by_employee
 from datetime import datetime
@@ -24,11 +25,19 @@ entry.pack(pady=10)
 frame_buttons = ttk.Frame(root)
 frame_buttons.pack(pady=20)
 
+def is_valid_full_name(name):
+    # Проверяет, что имя состоит из двух слов, разделённых пробелом, только из букв
+    return bool(re.fullmatch(r"[А-Яа-яA-Za-z]+ [А-Яа-яA-Za-z]+", name))
+
+
 # Старт смены
 def start_shift():
     name = entry.get().strip()
     if not name:
         messagebox.showwarning("Ошибка", "Пожалуйста, введите имя сотрудника.")
+        return
+    if not is_valid_full_name(name):
+        messagebox.showerror("Ошибка", "Введите имя и фамилию через пробел (только буквы).")
         return
     if messagebox.askyesno("Подтверждение", f"Начать смену для {name}?"):
         employee_id = get_employee_id(name)
@@ -39,11 +48,15 @@ def start_shift():
         else:
             messagebox.showerror("Ошибка", f"Сотрудник {name} не найден.")
 
+
 # Конец смены
 def end_shift():
     name = entry.get().strip()
     if not name:
         messagebox.showwarning("Ошибка", "Пожалуйста, введите имя сотрудника.")
+        return
+    if not is_valid_full_name(name):
+        messagebox.showerror("Ошибка", "Введите имя и фамилию через пробел (только буквы).")
         return
     if messagebox.askyesno("Подтверждение", f"Завершить смену для {name}?"):
         employee_id = get_employee_id(name)
@@ -54,36 +67,51 @@ def end_shift():
         else:
             messagebox.showerror("Ошибка", f"Сотрудник {name} не найден.")
 
+
 # Добавление нового сотрудника
 def open_add_employee_window():
     add_window = tk.Toplevel(root)
     add_window.title("Добавление нового сотрудника")
-    add_window.geometry("400x300")
+    add_window.geometry("400x320")
 
+    # Имя
     tk.Label(add_window, text="Имя:").pack()
     entry_name = tk.Entry(add_window)
     entry_name.pack()
 
+    # Отдел (Combobox)
     tk.Label(add_window, text="Отдел:").pack()
-    entry_dept = tk.Entry(add_window)
-    entry_dept.pack()
+    departments = ["Отдел разработки", "Бухгалтерия", "Отдел кадров", "Маркетинг", "Продажи"]
+    combo_dept = ttk.Combobox(add_window, values=departments, state="readonly")
+    combo_dept.pack()
 
+    # Роль (Combobox)
     tk.Label(add_window, text="Роль:").pack()
-    entry_role = tk.Entry(add_window)
-    entry_role.pack()
+    roles = ["Менеджер", "Разработчик", "Бухгалтер", "HR", "Аналитик"]
+    combo_role = ttk.Combobox(add_window, values=roles, state="readonly")
+    combo_role.pack()
 
+    # Дата найма
     tk.Label(add_window, text="Дата найма (YYYY-MM-DD):").pack()
     entry_hire_date = tk.Entry(add_window)
     entry_hire_date.pack()
-
+    
     def submit():
         name = entry_name.get().strip()
-        dept = entry_dept.get().strip()
-        role = entry_role.get().strip()
+        dept = combo_dept.get().strip()
+        role = combo_role.get().strip()
         hire_date = entry_hire_date.get().strip()
 
         if not name or not hire_date:
             messagebox.showwarning("Ошибка", "Имя и дата найма обязательны.")
+            return
+
+        if not dept:
+            messagebox.showwarning("Ошибка", "Пожалуйста, выберите отдел из списка.")
+            return
+
+        if not role:
+            messagebox.showwarning("Ошибка", "Пожалуйста, выберите роль из списка.")
             return
 
         try:
@@ -100,6 +128,7 @@ def open_add_employee_window():
             messagebox.showerror("Ошибка", f"Не удалось добавить сотрудника: {e}")
 
     tk.Button(add_window, text="Сохранить", command=submit).pack(pady=10)
+
     
 def open_employee_view_window():
     window = tk.Toplevel()
